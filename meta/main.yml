@@ -1,0 +1,24 @@
+---
+galaxy_info:
+  author: Till Klampaeckel
+  description: Install MariaDB-Backup.
+  company: Planetary Quantum GmbH
+  license: BSD-2-Clause
+  min_ansible_version: 2.9
+  platforms:
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+    - name: el
+      versions:
+        - 7
+  galaxy_tags:
+    - backup
+    - database
+    - mariadb
+dependencies: []

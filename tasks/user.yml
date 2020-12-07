@@ -1,0 +1,28 @@
+---
+- name: Create a MariaDB backup database user
+  mysql_user:
+    name: "{{ mariadb_backup_db_username }}"
+    host: localhost
+    password: "{{ mariadb_backup_db_password }}"
+    state: present
+    priv: "*.*:RELOAD,PROCESS,LOCK TABLES,REPLICATION CLIENT/PERCONA_SCHEMA.*:CREATE,INSERT"
+    append_privs: true
+  when:
+    - mariadb_backup_db_password|length > 0
+
+- name: Create system user
+  user:
+    name: "{{ mariadb_backup_system_account }}"
+    shell: /usr/sbin/nologin
+    system: true
+    group: mysql
+    state: present
+  register: _mariadb_backup_system_user
+
+- name: Create .my.cnf for user
+  template:
+    src: my.cnf.j2
+    dest: "{{ _mariadb_backup_system_user.home }}/.my.cnf"
+    owner: "{{ _mariadb_backup_system_user.name }}"
+    group: "{{ _mariadb_backup_system_user.group }}"
+    mode: 0600

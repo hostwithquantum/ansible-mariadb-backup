@@ -1,0 +1,16 @@
+---
+- name: Converge
+  hosts: all
+  pre_tasks:
+    - name: "[RedHat-7] Install MariaDB-backup"
+      block:
+        - name: Override package-name
+          set_fact:
+            mariadb_backup_package: MariaDB-backup
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '7'
+  roles:
+    - role: mariadb-backup
+      vars:
+        mariadb_backup_db_password: 123mariadb
