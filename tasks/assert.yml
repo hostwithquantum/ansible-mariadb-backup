@@ -1,8 +1,8 @@
 ---
 - name: Fail on Jessie
   assert:
-    fail_msg: "Debian 8/Jessie and Debian9/stretch are not supported"
+    fail_msg: "Debian 8/Jessie are not supported"
     that:
-      - ansible_distribution_major_version|int > 9
+      - ansible_distribution_major_version|int > 8
   when:
     - ansible_os_family == 'Debian'

@@ -1,2 +1,0 @@
----
-mariadb_backup_package: mariadb-backup-{{ mariadb_backup_server_version }}

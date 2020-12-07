@@ -2,11 +2,30 @@
 - name: Converge
   hosts: all
   pre_tasks:
-    - name: This likely fixes stale apt caches in Docker images
-      apt:
-        update_cache: true
-        cache_valid_time: 3600
+    - name: "[RedHat-7] Install MariaDB-backup"
+      block:
+        - name: Override package-name
+          set_fact:
+            mariadb_backup_package: MariaDB-backup
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '7'
+
+    - name: "[Debian-9] Override `mariadb_backup_package`"
+      set_fact:
+        mariadb_backup_package: mariadb-backup-10.2
       when:
         - ansible_os_family == 'Debian'
+        - ansible_distribution_major_version == '9'
+
+    - name: "[Debian-20] Set python3 on Ubuntu 20.04"
+      set_fact:
+        ansible_python_interpreter: /usr/bin/python3
+      when:
+        - ansible_os_family == 'Debian'
+        - ansible_distribution_major_version == '20'
+
   roles:
-    - role: mariadb-backup
+    - role: hostwithquantum.mariadbbackup
+      vars:
+        mariadb_backup_db_password: 123mariadb

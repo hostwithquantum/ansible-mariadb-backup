@@ -1,0 +1,82 @@
+---
+- name: Prepare
+  hosts: all
+  pre_tasks:
+    - name: "[Debian] This likely fixes stale apt caches in Docker images"
+      block:
+        - name: Update cache
+          apt:
+            update_cache: true
+            cache_valid_time: 3600
+
+        - name: "[Debian-9] does not have mariabackup or xtrabackup"
+          block:
+            - name: Import apt key
+              apt_key:
+                url: https://mariadb.org/mariadb_release_signing_key.asc
+                state: present
+
+            - name: Discover 10.2 repository
+              apt_repository:
+                filename: mariadb
+                repo: deb [arch=amd64] http://ftp.hosteurope.de/mirror/mariadb.org/repo/10.2/debian stretch main
+                state: present
+
+            - name: Override defaults in geerlingguy.mysql
+              set_fact:
+                mysql_packages: "['mariadb-server', 'mysql-common', 'python-mysqldb']"
+          when:
+            - ansible_distribution_major_version == '9'
+
+        - name: "[Debian-9, Debian-10, Debian-18] Configure geerlingguy.mysql with Python2"
+          set_fact:
+            mysql_python_package_debian: python-mysqldb
+          when:
+            - ansible_distribution_major_version != '20'
+
+        - name: "[Debian-20] Variables for Ubuntu 20.04"
+          block:
+            - name: Override vars
+              set_fact:
+                ansible_python_interpreter: /usr/bin/python3
+                mysql_packages: "['mariadb-server-10.3', 'mariadb-server-core-10.3']"
+          when:
+            - ansible_distribution_major_version == '20'
+
+      when:
+        - ansible_os_family == 'Debian'
+
+    - name: Debug
+      debug:
+        msg: "{{ item }}"
+      loop:
+        - "{{ ansible_os_family }}"
+        - "{{ ansible_distribution_major_version }}"
+
+    - name: "Create pid dir"
+      file:
+        path: "/var/run/mariadb"
+        state: directory
+        owner: root
+        group: root
+        mode: 0757
+        # setype: mysqld_var_run_t
+
+    - name: "[RedHat-7] pre-tasks"
+      block:
+        - name: use MariaDB 10.2
+          yum_repository:
+            name: mariadb
+            description: MariaDB
+            baseurl: http://yum.mariadb.org/10.2/centos7-amd64
+            gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+            gpgcheck: true
+            state: present
+      when:
+        - ansible_os_family == 'RedHat'
+        - ansible_distribution_major_version == '7'
+
+  roles:
+    - role: geerlingguy.mysql
+      vars:
+        mysql_pid_file: /var/run/mariadb/mariadb.pid
