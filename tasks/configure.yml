@@ -1,0 +1,8 @@
+---
+- name: Create backup directory
+  file:
+    path: "{{ mariadb_backup_directory }}"
+    owner: "{{ mariadb_backup_system_account }}"
+    group: mysql
+    state: directory
+    mode: '0755'

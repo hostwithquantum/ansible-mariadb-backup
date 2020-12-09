@@ -42,3 +42,10 @@ def test_mysql_user_is_created(host):
     cmd = host.run("mysql -u mariabackup -p123mariadb -e 'show databases;'")
 
     assert cmd.rc == 0
+
+
+def test_mariadb_fullback(host):
+    with host.sudo("mariabackup"):
+        host.run(
+            "mariabackup --backup --target-dir=/var/lib/mariadb/backups"
+        )

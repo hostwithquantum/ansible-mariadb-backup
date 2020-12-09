@@ -27,6 +27,7 @@ There are a few oddities about MariaDB Server versions and distributions, the fo
 | :------------- | :----------: | -----------: |
 | `mariadb_backup_db_username` | `mariabackup` | Name of the database user |
 | `mariadb_backup_db_password` | _empty string_ | Set this to create the user. |
+| `mariadb_backup_directory` | `/var/lib/mariadb/backups` | Location where backups are stored |
 | `mariadb_backup_system_account` | `mariabackup` | Name of the system/linux account |
 
 
