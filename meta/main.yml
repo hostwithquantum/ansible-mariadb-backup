@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: mariadbbackup
   author: Till Klampaeckel
   description: Install MariaDB-Backup.
   company: Planetary Quantum GmbH

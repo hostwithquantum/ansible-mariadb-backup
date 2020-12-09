@@ -11,6 +11,10 @@
 
 - import_tasks: user.yml
 
+- include_tasks: configure.yml
+  when:
+    - mariadb_backup_directory|length > 0
+
 - name: Install MariaDB-backup
   package:
     name: "{{ mariadb_backup_package }}"

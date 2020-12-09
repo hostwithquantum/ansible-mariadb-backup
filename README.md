@@ -1,19 +1,21 @@
 # MariaDB Backup
 
-Installs MariaDB-Backup (or percona-extradebug).
+Installs MariaDB-Backup (or `percona-xtrabackup`).
 
 There are a few oddities about MariaDB Server versions and distributions, the following are the distribution defaults (unless you did something otherwise):
 
 | Distribution | Version | `mariadb_backup_package` |
 | :------------- | :----------: | -----------: |
 | Debian-10 | `10.3` | `mariadb-backup` |
-| Debian-9 | `10.2` | `mariadb-backup` |
-| RedHat-7 | `~10.1` | `percona-xtrabackup` |
+| Debian-9 | `10.1` | **not available** |
+| Ubuntu-2004 | `10.3` | `mariadb-backup` |
+| Ubuntu-1804 | ... | `percona-xtrabackup` |
+| CentOS-7 | `~10.1` | `percona-xtrabackup` |
 
 **Note**
 
 > It's generally not possible to install MariaDB(-server) from the distributions repository and then install `mariadb-backup` using MariaDB's repositories.
-> Repository discovery is out of scope for this role. You can however influence the source of  `mariadb-backup` by discovering a repository before the role is invoked and overriding `mariadb_backup_package`. See `molecule/all/prepare.yml`.
+> Repository discovery is out of scope for this role. You can however influence the source of  `mariadb-backup` by discovering a repository before the role is invoked and overriding `mariadb_backup_package`. See `molecule/default/prepare.yml`.
 
 ## Requirements
 
@@ -25,6 +27,7 @@ There are a few oddities about MariaDB Server versions and distributions, the fo
 | :------------- | :----------: | -----------: |
 | `mariadb_backup_db_username` | `mariabackup` | Name of the database user |
 | `mariadb_backup_db_password` | _empty string_ | Set this to create the user. |
+| `mariadb_backup_directory` | `/var/lib/mariadb/backups` | Location where backups are stored |
 | `mariadb_backup_system_account` | `mariabackup` | Name of the system/linux account |
 
 
@@ -37,7 +40,7 @@ n/a
 ```yaml
 - hosts: servers
   roles:
-    - { role: hostwithquantum.mariadb-backup }
+    - { role: hostwithquantum.mariadbbackup }
 ```
 
 ## License

@@ -1,11 +1,10 @@
 SHELL=/bin/bash
 
-ROLENAME=mariadb-backup
+ROLENAME=hostwithquantum.mariadbbackup
 TESTIMAGENAME=molecule-test
 
 docker_cmd:=docker run --rm -it \
 	-v '${PWD}':/${ROLENAME} \
-	-v ${HOME}/.cache/molecule:/root/.cache/molecule \
 	-v /var/run/docker.sock:/var/run/docker.sock:ro \
 	-w /${ROLENAME} \
 	--env MOLECULE_DISTRO \
@@ -13,7 +12,7 @@ docker_cmd:=docker run --rm -it \
 
 .PHONY: clean
 clean:
-	docker stop instance || true
+	docker stop instance || true
 	docker kill instance || true
 	docker rm instance || true
 

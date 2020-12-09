@@ -3,5 +3,7 @@
 mariadb_backup_db_username: mariabackup
 mariadb_backup_db_password: ""
 
+mariadb_backup_directory: /var/lib/mariadb/backups
+
 # name of the system/linux account
 mariadb_backup_system_account: mariabackup
